@@ -3,9 +3,11 @@
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
+use App\Controllers\AccountsController;
 use App\Models\Customer;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
+use App\Models\Account;
 
 /*=============================================
 INICIO
@@ -62,18 +64,6 @@ if ($method === 'GET' && $uri === '/dashboard') {
         exit;
     }
 
-    $customer = new Customer($pdo);
-    $dashboardController = new DashboardController($customer);
-    $customerData = $dashboardController->index($_SESSION['customer_id']);
-
-    if ($customerData === null) {
-        $_SESSION = [];
-        session_destroy();
-
-        header('Location: /login');
-        exit;
-    }
-
     require __DIR__ . '/../app/Views/dashboard.php';
 }
 
@@ -87,6 +77,12 @@ if ($method === 'GET' && $uri === '/accounts') {
         header('Location: /login');
         exit;
     }
+
+    $account = new Account($pdo);
+    $accountsController = new AccountsController($account);
+    $accounts = $accountsController->index((int) $_SESSION['customer_id']);
+
+    require __DIR__ . '/../app/Views/accounts/index.php';
 }
 
 /*=============================================

@@ -22,6 +22,8 @@ class AuthController
             session_regenerate_id(true);
 
             $_SESSION['customer_id'] = $customerData['id'];
+            $_SESSION['first_name'] = $customerData['first_name'];
+            $_SESSION['last_name'] = $customerData['last_name'];
 
             return true;
         }
