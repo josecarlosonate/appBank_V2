@@ -10,7 +10,7 @@ class AuthController
         private Customer $customer
     ) {}
 
-    public function login(string $documentNumber, string $password): bool
+    public function login(string $documentNumber, string $password): array|false
     {
         $customerData = $this->customer->findByDocumentNumber($documentNumber);
 
@@ -18,16 +18,10 @@ class AuthController
             return false;
         }
 
-        if (password_verify($password, $customerData['password'])) {
-            session_regenerate_id(true);
-
-            $_SESSION['customer_id'] = $customerData['id'];
-            $_SESSION['first_name'] = $customerData['first_name'];
-            $_SESSION['last_name'] = $customerData['last_name'];
-
-            return true;
+        if (!password_verify($password, $customerData['password'])) {
+            return false;
         }
 
-        return false;
+        return $customerData;
     }
 }

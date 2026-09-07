@@ -21,6 +21,9 @@
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/2c9eef3e53.js" crossorigin="anonymous"></script>
+
+    <!-- Mis estilos -->
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 
 <body class="bg-light">
@@ -44,10 +47,42 @@
                     </li>
                 </ol>
             </nav>
-            <h1 class="fw-bold">Mis Cuentas</h1>
-            <p class="text-secondary fs-5">
-                Consulta y administra tus cuentas.
-            </p>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="fw-bold">Mis cuentas</h1>
+                    <p class="text-secondary fs-5 mb-0">
+                        Consulta y administra tus cuentas.
+                    </p>
+                </div>
+
+                <a href="/accounts/create" class="btn btn-success">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Nueva cuenta
+                </a>
+            </div>
+
+        </div>
+
+        <div>
+            <?php if (isset($_SESSION['success'])): ?>
+
+                <div class="alert alert-success" role="alert">
+                    <?= htmlspecialchars($_SESSION['success']) ?>
+                </div>
+
+                <?php unset($_SESSION['success']); ?>
+
+            <?php endif; ?>
+            <?php if (isset($_SESSION['error'])): ?>
+
+                <div class="alert alert-danger" role="alert">
+                    <?= htmlspecialchars($_SESSION['error']) ?>
+                </div>
+
+                <?php unset($_SESSION['error']); ?>
+
+            <?php endif; ?>
         </div>
 
         <div class="row">
@@ -76,7 +111,59 @@
 
             <?php else: ?>
 
-                <!-- Aquí irá la tabla -->
+                <div class="card border-1 shadow">
+                    <div class="card-body p-4">
+
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Número de cuenta</th>
+                                        <th>Saldo</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <?php foreach ($accounts as $index => $account): ?>
+                                        <tr>
+                                            <td><?= $index + 1 ?></td>
+                                            <td><?= $account['account_number'] ?></td>
+                                            <td>$ <?= number_format($account['balance'], 2, ',', '.') ?></td>
+                                            <td>
+                                                <?php if ($account['is_active'] == 1): ?>
+                                                    <span class="badge text-bg-success d-inline-block account-status-badge">Activa</span>
+                                                <?php else: ?>
+                                                    <span class="badge text-bg-secondary d-inline-block account-status-badge">Inactiva</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <form method="POST" action="/accounts/status">
+                                                    <input type="hidden" name="account_id" value="<?= $account['id'] ?>">
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn account-status-button <?= $account['is_active'] == 1
+                                                                                                ? 'btn-outline-danger'
+                                                                                                : 'btn-outline-success' ?>">
+                                                        <?= $account['is_active'] == 1
+                                                            ? 'Desactivar'
+                                                            : 'Activar' ?>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
 
             <?php endif; ?>
         </div>
