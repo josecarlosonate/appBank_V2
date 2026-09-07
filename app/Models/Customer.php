@@ -23,4 +23,18 @@ class Customer
 
         return $stmt->fetch();
     }
+
+    public function findById(int $id): array|false
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT first_name, last_name FROM customers
+         WHERE id = :id"
+        );
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        return $stmt->fetch();
+    }
 }
