@@ -5,6 +5,7 @@ $uri = $_SERVER['REQUEST_URI'];
 
 use App\Models\Customer;
 use App\Controllers\AuthController;
+use App\Controllers\DashboardController;
 
 /*=============================================
 INICIO
@@ -32,7 +33,7 @@ if ($method === 'POST' && $uri === '/login') {
     $authenticated = $authController->login($documentNumber, $password);
 
     if ($authenticated) {
-        header('Location: /accounts');
+        header('Location: /dashboard');
         exit;
     }
 
@@ -48,6 +49,32 @@ if ($method === 'POST' && $uri === '/logout') {
     session_destroy();
     header('Location: /login');
     exit;
+}
+
+/*=============================================
+DASHBOARD
+=============================================*/
+
+if ($method === 'GET' && $uri === '/dashboard') {
+
+    if (!isset($_SESSION['customer_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $customer = new Customer($pdo);
+    $dashboardController = new DashboardController($customer);
+    $customerData = $dashboardController->index($_SESSION['customer_id']);
+
+    if ($customerData === null) {
+        $_SESSION = [];
+        session_destroy();
+
+        header('Location: /login');
+        exit;
+    }
+
+    require __DIR__ . '/../app/Views/dashboard.php';
 }
 
 /*=============================================
