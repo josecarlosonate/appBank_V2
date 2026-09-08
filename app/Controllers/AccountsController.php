@@ -17,7 +17,7 @@ class AccountsController
         return $accounts;
     }
 
-    public function updateStatus(int $accountId, int $customerId)
+    public function updateStatus(int $accountId, int $customerId): bool
     {
         $accountData = $this->account->findByIdAndCustomerId($accountId, $customerId);
 
@@ -31,6 +31,30 @@ class AccountsController
             $accountId,
             $customerId,
             $newStatus
+        );
+    }
+
+    public function store(
+        int $customerId,
+        string $accountType,
+        float $balance
+    ): bool {
+
+        if (!in_array($accountType, ['SAVINGS', 'CHECKING'], true)) {
+            return false;
+        }
+
+        if ($balance < 0) {
+            return false;
+        }
+
+        $accountNumber = $this->account->generateAccountNumber();
+
+        return $this->account->create(
+            $customerId,
+            $accountNumber,
+            $accountType,
+            $balance
         );
     }
 }

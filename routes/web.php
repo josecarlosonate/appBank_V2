@@ -121,6 +121,53 @@ if ($method === 'POST' && $uri === '/accounts/status') {
     exit;
 }
 
+if ($method === 'GET' && $uri === '/accounts/create') {
+
+    if (!isset($_SESSION['customer_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    require __DIR__ . '/../app/Views/accounts/create.php';
+}
+
+if ($method === 'POST' && $uri === '/accounts') {
+
+    if (!isset($_SESSION['customer_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $accountType = $_POST['account_type'] ?? '';
+    $balance = $_POST['balance'] ?? '';
+
+    if (
+        !is_string($balance) ||
+        !preg_match('/^\d{1,13}(\.\d{1,2})?$/', $balance)
+    ) {
+        $_SESSION['error'] = 'El saldo ingresado no es válido.';
+        header('Location: /accounts/create');
+        exit;
+    }
+
+    $balance = (float) $balance;
+
+    $account = new Account($pdo);
+    $accountsController = new AccountsController($account);
+    $created = $accountsController->store((int) $_SESSION['customer_id'], $accountType, $balance);
+
+    if (!$created) {
+        $_SESSION['error'] = 'No fue posible registrar la cuenta.';
+        header('Location: /accounts/create');
+        exit;
+    } else {
+        $_SESSION['success'] = 'La nueva cuenta fue registrada correctamente.';
+    }
+
+    header('Location: /accounts');
+    exit;
+}
+
 /*=============================================
 TRANSFERENCIAS
 =============================================*/

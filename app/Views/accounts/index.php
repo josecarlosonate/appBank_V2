@@ -122,6 +122,7 @@
                                         <th>#</th>
                                         <th>Número de cuenta</th>
                                         <th>Saldo</th>
+                                        <th>Tipo</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
@@ -133,6 +134,12 @@
                                             <td><?= $index + 1 ?></td>
                                             <td><?= $account['account_number'] ?></td>
                                             <td>$ <?= number_format($account['balance'], 2, ',', '.') ?></td>
+                                            <td>
+                                                <?= $account['account_type'] === 'SAVINGS'
+                                                    ? 'Cuenta de ahorros'
+                                                    : 'Cuenta corriente'
+                                                ?>
+                                            </td>
                                             <td>
                                                 <?php if ($account['is_active'] == 1): ?>
                                                     <span class="badge text-bg-success d-inline-block account-status-badge">Activa</span>
