@@ -10,6 +10,9 @@ class Account
         private PDO $pdo
     ) {}
 
+    /*=============================================
+    CUENTAS PROPIAS
+    =============================================*/
     public function findByCustomerId(int $customerId): array
     {
         $stmt = $this->pdo->prepare(
@@ -24,11 +27,8 @@ class Account
         return $stmt->fetchAll();
     }
 
-    public function findByIdAndCustomerId(
-        int $accountId,
-        int $customerId
-    ): array|false {
-
+    public function findByIdAndCustomerId(int $accountId, int $customerId): array|false
+    {
         $stmt = $this->pdo->prepare(
             "SELECT id, is_active FROM accounts
                 WHERE id = :account_id AND customer_id = :customer_id"
@@ -42,12 +42,8 @@ class Account
         return $stmt->fetch();
     }
 
-    public function updateStatus(
-        int $accountId,
-        int $customerId,
-        int $status
-    ): bool {
-
+    public function updateStatus(int $accountId, int $customerId, int $status): bool
+    {
         $stmt = $this->pdo->prepare(
             "UPDATE accounts  SET is_active = :status
                 WHERE id = :account_id  AND customer_id = :customer_id"
@@ -60,13 +56,8 @@ class Account
         ]);
     }
 
-    public function create(
-        int $customerId,
-        string $accountNumber,
-        string $accountType,
-        float $balance
-    ): bool {
-
+    public function create(int $customerId, string $accountNumber, string $accountType, float $balance): bool
+    {
         $stmt = $this->pdo->prepare(
             "INSERT INTO accounts ( customer_id, account_number, account_type, balance, is_active )
                     VALUES (:customer_id, :account_number, :account_type, :balance, 1 )"
@@ -82,7 +73,7 @@ class Account
 
     public function generateAccountNumber(): string
     {
-        /* Formato de cuenta: 31-72978-990 */
+        /* Formato de cuenta: XX-XXXXX-XXX */
         do {
             $part1 = random_int(10, 99);
             $part2 = random_int(10000, 99999);
@@ -104,4 +95,29 @@ class Account
 
         return $stmt->fetch() !== false;
     }
+
+    /*=============================================
+    CUENTAS INSCRITAS
+    =============================================*/
+    public function findRegisteredByCustomerId(int $customerId): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT 
+            ra.id AS registration_id,
+            a.id AS account_id,
+            a.account_number,
+            a.account_type,
+            c.first_name,
+            c.last_name  FROM registered_accounts ra INNER JOIN accounts a ON ra.account_id = a.id
+                        INNER JOIN customers c ON a.customer_id = c.id WHERE ra.customer_id = :customer_id"
+        );
+
+        $stmt->execute([
+            'customer_id' => $customerId
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    public function findByAccountNumberAndDocument() {}
 }

@@ -13,8 +13,12 @@ class AccountsController
     public function index(int $customerId): array
     {
         $accounts = $this->account->findByCustomerId($customerId);
+        $registeredAccounts = $this->account->findRegisteredByCustomerId($customerId);
 
-        return $accounts;
+        return [
+            'accounts' => $accounts,
+            'registeredAccounts' => $registeredAccounts
+        ];
     }
 
     public function updateStatus(int $accountId, int $customerId): bool
@@ -34,12 +38,8 @@ class AccountsController
         );
     }
 
-    public function store(
-        int $customerId,
-        string $accountType,
-        float $balance
-    ): bool {
-
+    public function store(int $customerId, string $accountType, float $balance): bool
+    {
         if (!in_array($accountType, ['SAVINGS', 'CHECKING'], true)) {
             return false;
         }

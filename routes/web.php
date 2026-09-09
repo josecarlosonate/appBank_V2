@@ -69,7 +69,7 @@ if ($method === 'GET' && $uri === '/dashboard') {
         exit;
     }
 
-    require __DIR__ . '/../app/Views/dashboard.php';
+    require __DIR__ . '/../app/views/dashboard.php';
 }
 
 /*=============================================
@@ -85,7 +85,8 @@ if ($method === 'GET' && $uri === '/accounts') {
 
     $account = new Account($pdo);
     $accountsController = new AccountsController($account);
-    $accounts = $accountsController->index((int) $_SESSION['customer_id']);
+    $accountData = $accountsController->index((int) $_SESSION['customer_id']);
+    ['accounts' => $accounts, 'registeredAccounts' => $registeredAccounts] = $accountData;
 
     require __DIR__ . '/../app/Views/accounts/index.php';
 }
@@ -128,7 +129,7 @@ if ($method === 'GET' && $uri === '/accounts/create') {
         exit;
     }
 
-    require __DIR__ . '/../app/Views/accounts/create.php';
+    require __DIR__ . '/../app/views/accounts/create.php';
 }
 
 if ($method === 'POST' && $uri === '/accounts') {
@@ -166,6 +167,16 @@ if ($method === 'POST' && $uri === '/accounts') {
 
     header('Location: /accounts');
     exit;
+}
+
+if ($method === 'GET' && $uri === '/accounts/register') {
+
+    if (!isset($_SESSION['customer_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    require __DIR__ . '/../app/views/accounts/register.php';
 }
 
 /*=============================================

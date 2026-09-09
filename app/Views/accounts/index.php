@@ -115,7 +115,7 @@
                     <div class="card-body p-4">
 
                         <div class="table-responsive">
-                            <table class="table align-middle mb-0">
+                            <table class="table align-middle mb-0 table-hover">
 
                                 <thead>
                                     <tr>
@@ -173,6 +173,80 @@
                 </div>
 
             <?php endif; ?>
+        </div>
+
+        <!-- Cuentas inscritas -->
+        <div class="mt-5">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold">Cuentas inscritas</h2>
+                    <p class="text-secondary mb-0">
+                        Administra las cuentas de terceros que tienes inscritas.
+                    </p>
+                </div>
+
+                <a href="/accounts/register" class="btn btn-success">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Inscribir cuenta
+                </a>
+            </div>
+
+            <div class="row">
+                <?php if (empty($registeredAccounts)): ?>
+
+                    <div class="card border-0 shadow">
+                        <div class="card-body text-center py-5">
+                            <i class="fa-solid fa-wallet fs-1 text-success mb-3"></i>
+                            <h4 class="fw-bold">
+                                No tienes cuentas inscritas
+                            </h4>
+                            <p class="text-secondary mb-4">
+                                Registra tu primera cuenta para comenzar a transferir a terceros.
+                            </p>
+                        </div>
+                    </div>
+
+                <?php else: ?>
+                    <div class="card border-1 shadow">
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0 table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Número de cuenta</th>
+                                            <th>Titular</th>
+                                            <th>Tipo</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($registeredAccounts as $index => $registeredAccount): ?>
+                                            <tr>
+                                                <td><?= $index + 1 ?></td>
+                                                <td><?= $registeredAccount['account_number'] ?></td>
+                                                <td><?= $registeredAccount['first_name'] . ' ' . $registeredAccount['last_name'] ?></td>
+                                                <td><?= $registeredAccount['account_type'] == 'SAVINGS' ? 'Cuenta de ahorros' : 'Cuenta corriente' ?></td>
+                                                <td>
+                                                    <form method="POST" action="/accounts/unregister">
+                                                        <input type="hidden" name="registeredAccount_id" value="<?= $registeredAccount['registration_id'] ?>">
+                                                        <button type="submit" class="btn account-status-button btn-outline-danger">
+                                                            Quitar
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php endif; ?>
+            </div>
+
         </div>
 
     </main>
