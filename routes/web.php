@@ -91,7 +91,7 @@ if ($method === 'GET' && $uri === '/accounts') {
     $accountData = $accountsController->index((int) $_SESSION['customer_id']);
     ['accounts' => $accounts, 'registeredAccounts' => $registeredAccounts] = $accountData;
 
-    require __DIR__ . '/../app/Views/accounts/index.php';
+    require __DIR__ . '/../app/views/accounts/index.php';
 }
 
 if ($method === 'POST' && $uri === '/accounts/status') {
