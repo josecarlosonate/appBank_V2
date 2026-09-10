@@ -119,5 +119,46 @@ class Account
         return $stmt->fetchAll();
     }
 
-    public function findByAccountNumberAndDocument() {}
+    public function findByAccountNumberAndDocument(string $accountNumber, string $documentNumber): array|false
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT a.id AS account_id, c.document_number, c.id AS customer_id FROM accounts a INNER JOIN customers c ON a.customer_id = c.id
+                     WHERE a.account_number = :account_number AND c.document_number = :document_number"
+        );
+
+        $stmt->execute([
+            'account_number' => $accountNumber,
+            'document_number' => $documentNumber
+        ]);
+
+        return $stmt->fetch();
+    }
+
+    public function isAlreadyRegistered(int $customerId, int $accountId): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT 1 FROM registered_accounts 
+             WHERE customer_id = :customer_id AND account_id = :account_id"
+        );
+
+        $stmt->execute([
+            'customer_id' => $customerId,
+            'account_id' => $accountId
+        ]);
+
+        return $stmt->fetch() !== false;
+    }
+
+    public function register(int $customerId, int $accountId): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "INSERT INTO registered_accounts (customer_id, account_id) 
+             VALUES (:customer_id, :account_id)"
+        );
+
+        return $stmt->execute([
+            'customer_id' => $customerId,
+            'account_id' => $accountId
+        ]);
+    }
 }

@@ -7,6 +7,9 @@ use App\Controllers\AccountsController;
 use App\Models\Customer;
 use App\Controllers\AuthController;
 use App\Models\Account;
+use App\Enums\AccountRegistrationResult;
+
+/** @var \PDO $pdo */
 
 /*=============================================
 INICIO
@@ -177,6 +180,39 @@ if ($method === 'GET' && $uri === '/accounts/register') {
     }
 
     require __DIR__ . '/../app/views/accounts/register.php';
+}
+
+if ($method === 'POST' && $uri === '/accounts/register') {
+
+    if (!isset($_SESSION['customer_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $accountNumber = trim($_POST['account_number'] ?? '');
+    $documentNumber = trim($_POST['document_number'] ?? '');
+
+    $account = new Account($pdo);
+    $accountsController = new AccountsController($account);
+    $result = $accountsController->register_account((int) $_SESSION['customer_id'], $accountNumber, $documentNumber);
+
+    $mensage = match ($result) {
+        AccountRegistrationResult::ACCOUNT_NOT_FOUND => 'La cuenta o el documento no coinciden.',
+        AccountRegistrationResult::OWN_ACCOUNT => 'No puedes inscribir una cuenta propia.',
+        AccountRegistrationResult::ALREADY_REGISTERED => 'Esta cuenta ya está inscrita.',
+        AccountRegistrationResult::REGISTRATION_FAILED => 'No fue posible registrar la cuenta.',
+        AccountRegistrationResult::SUCCESS => 'La nueva cuenta fue registrada correctamente.'
+    };
+
+    if ($result === AccountRegistrationResult::SUCCESS) {
+        $_SESSION['success'] = $mensage;
+        header('Location: /accounts');
+        exit;
+    } else {
+        $_SESSION['error'] = $mensage;
+        header('Location: /accounts/register');
+        exit;
+    }
 }
 
 /*=============================================
