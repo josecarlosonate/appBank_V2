@@ -60,7 +60,7 @@ class AccountsController
     }
 
     // inscribir cuentas de terceros
-    public function register_account(int $customerId, string $accountNumber, string $documentNumber): AccountRegistrationResult
+    public function registerAccount(int $customerId, string $accountNumber, string $documentNumber): AccountRegistrationResult
     {
         // PASO 1: Verificar que la cuenta existe y coincide con el documento provisto
         $accountData = $this->account->findByAccountNumberAndDocument($accountNumber, $documentNumber);
@@ -85,5 +85,11 @@ class AccountsController
         }
 
         return AccountRegistrationResult::SUCCESS;
+    }
+
+    // eliminar inscripción de cuenta de tercero
+    public function unregisterAccount(int $customerId, int $accountId): bool
+    {
+        return $this->account->unRegister($customerId, $accountId);
     }
 }

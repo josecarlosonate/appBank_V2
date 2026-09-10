@@ -161,4 +161,18 @@ class Account
             'account_id' => $accountId
         ]);
     }
+
+    public function unRegister(int $customerId, int $accountId): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "DELETE FROM registered_accounts WHERE customer_id = :customer_id AND account_id = :account_id"
+        );
+
+        $result = $stmt->execute([
+            'customer_id' => $customerId,
+            'account_id' => $accountId
+        ]);
+
+        return $result && $stmt->rowCount() > 0;
+    }
 }

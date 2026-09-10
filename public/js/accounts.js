@@ -97,4 +97,24 @@ $(function () {
       }
     },
   });
+
+  /* desvincular cuentas inscritas */
+  const unregisterForms = document.querySelectorAll(".unregister-account-form");
+  unregisterForms.forEach(function (form) {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      Swal.fire({
+        title: "¿Desvincular cuenta?",
+        text: "Esta cuenta dejará de aparecer en tus cuentas inscritas.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Desvincular",
+        cancelButtonText: "Cancelar",
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
 });

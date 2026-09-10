@@ -229,10 +229,10 @@
                                                 <td><?= $registeredAccount['first_name'] . ' ' . $registeredAccount['last_name'] ?></td>
                                                 <td><?= $registeredAccount['account_type'] == 'SAVINGS' ? 'Cuenta de ahorros' : 'Cuenta corriente' ?></td>
                                                 <td>
-                                                    <form method="POST" action="/accounts/unregister">
-                                                        <input type="hidden" name="registeredAccount_id" value="<?= $registeredAccount['registration_id'] ?>">
+                                                    <form method="POST" class="unregister-account-form" action="/accounts/unregister">
+                                                        <input type="hidden" name="account_id" value="<?= $registeredAccount['account_id'] ?>">
                                                         <button type="submit" class="btn account-status-button btn-outline-danger">
-                                                            Quitar
+                                                            Desvincular
                                                         </button>
                                                     </form>
                                                 </td>
@@ -250,7 +250,10 @@
         </div>
 
     </main>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/accounts.js"></script>
 </body>
 
 </html>

@@ -194,14 +194,14 @@ if ($method === 'POST' && $uri === '/accounts/register') {
 
     $account = new Account($pdo);
     $accountsController = new AccountsController($account);
-    $result = $accountsController->register_account((int) $_SESSION['customer_id'], $accountNumber, $documentNumber);
+    $result = $accountsController->registerAccount((int) $_SESSION['customer_id'], $accountNumber, $documentNumber);
 
     $mensage = match ($result) {
         AccountRegistrationResult::ACCOUNT_NOT_FOUND => 'La cuenta o el documento no coinciden.',
         AccountRegistrationResult::OWN_ACCOUNT => 'No puedes inscribir una cuenta propia.',
         AccountRegistrationResult::ALREADY_REGISTERED => 'Esta cuenta ya está inscrita.',
-        AccountRegistrationResult::REGISTRATION_FAILED => 'No fue posible registrar la cuenta.',
-        AccountRegistrationResult::SUCCESS => 'La nueva cuenta fue registrada correctamente.'
+        AccountRegistrationResult::REGISTRATION_FAILED => 'No fue posible inscribir la cuenta.',
+        AccountRegistrationResult::SUCCESS => 'La cuenta de tercero fue inscrita correctamente.'
     };
 
     if ($result === AccountRegistrationResult::SUCCESS) {
@@ -213,6 +213,34 @@ if ($method === 'POST' && $uri === '/accounts/register') {
         header('Location: /accounts/register');
         exit;
     }
+}
+
+if ($method === 'POST' && $uri === '/accounts/unregister') {
+    if (!isset($_SESSION['customer_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    if (!isset($_POST['account_id'])) {
+        $_SESSION['error'] = 'No fue posible desvincular la cuenta.';
+        header('Location: /accounts');
+        exit;
+    }
+
+    $accountId = $_POST['account_id'];
+
+    $account = new Account($pdo);
+    $accountsController = new AccountsController($account);
+    $unRegister = $accountsController->unregisterAccount((int) $_SESSION['customer_id'], $accountId);
+
+    if (!$unRegister) {
+        $_SESSION['error'] = 'No fue posible desvincular la cuenta';
+    } else {
+        $_SESSION['success'] = 'La cuenta fue desvinculada correctamente.';
+    }
+
+    header('Location: /accounts');
+    exit;
 }
 
 /*=============================================
