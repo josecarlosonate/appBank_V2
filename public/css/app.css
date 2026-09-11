@@ -1,0 +1,13 @@
+.account-status-badge {
+    width: 75px;
+}
+
+.account-status-button {
+    width: 120px;
+}
+
+label.error {
+    color: var(--bs-danger);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
