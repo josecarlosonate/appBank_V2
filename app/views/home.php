@@ -19,14 +19,14 @@
 </head>
 
 <body>
-
+    <?= $isAuthenticated = isset($_SESSION['customer_id']) ?>
     <nav class="navbar border-bottom border-success border-2 shadow-sm py-3 bg-success-subtle">
         <div class="container">
             <a class="navbar-brand fw-bold fs-2 text-success" href="/">
                 <i class="fa-solid fa-building-columns me-2"></i>AppBank
             </a>
-            <a class="btn btn-outline-success" href="/login">
-                Iniciar sesión
+            <a class="btn btn-outline-success" href="<?= $isAuthenticated ? "/dashboard"  : "/login" ?>">
+                <?= $isAuthenticated ? "Ir al panel"  : "Iniciar sesión" ?>
             </a>
         </div>
     </nav>
@@ -44,8 +44,8 @@
                     y consulta tus movimientos desde un solo lugar.
                 </p>
 
-                <a href="/login" class="btn btn-success btn-lg">
-                    Iniciar sesión
+                <a href="<?= $isAuthenticated ? "/dashboard"  : "/login" ?>" class="btn btn-success btn-lg">
+                    <?= $isAuthenticated ? "Ir al panel"  : "Iniciar sesión" ?>
                     <i class="fa-solid fa-arrow-right ms-2"></i>
                 </a>
             </div>

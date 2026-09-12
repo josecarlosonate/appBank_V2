@@ -162,7 +162,7 @@ class Account
         ]);
     }
 
-    public function unRegister(int $customerId, int $accountId): bool
+    public function unregister(int $customerId, int $accountId): bool
     {
         $stmt = $this->pdo->prepare(
             "DELETE FROM registered_accounts WHERE customer_id = :customer_id AND account_id = :account_id"

@@ -10,18 +10,38 @@ class AuthController
         private Customer $customer
     ) {}
 
-    public function login(string $documentNumber, string $password): array|false
+    public function login()
     {
+        $documentNumber = $_POST['document_number'];
+        $password = $_POST['password'];
+
         $customerData = $this->customer->findByDocumentNumber($documentNumber);
 
-        if ($customerData === false) {
-            return false;
+        if (
+            $customerData === false ||
+            (!password_verify($password, $customerData['password']))
+        ) {
+            $_SESSION['error'] = 'Credenciales incorrectas';
+            header('Location: /login');
+            exit;
         }
 
-        if (!password_verify($password, $customerData['password'])) {
-            return false;
-        }
+        session_regenerate_id(true);
 
-        return $customerData;
+        $_SESSION['customer_id'] = $customerData['id'];
+        $_SESSION['first_name'] = $customerData['first_name'];
+        $_SESSION['last_name'] = $customerData['last_name'];
+
+        header('Location: /dashboard');
+        exit;
+    }
+
+    public function logout()
+    {
+        $_SESSION = [];
+        session_destroy();
+
+        header('Location: /login');
+        exit;
     }
 }
