@@ -58,6 +58,7 @@
                         <?php endif; ?>
 
                         <form method="POST" action="/login">
+                            <?= csrf_field() ?>
                             <div class="mb-3">
                                 <label for="document_number" class="form-label">
                                     Número de documento
