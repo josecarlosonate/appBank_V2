@@ -76,7 +76,7 @@
                     <div class="card-body p-4">
 
                         <form id="account-form" method="POST" action="/accounts">
-
+                            <?= csrf_field() ?>
                             <div class="mb-3">
                                 <label for="account_type" class="form-label fw-semibold">
                                     Tipo de cuenta

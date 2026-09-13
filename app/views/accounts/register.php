@@ -74,6 +74,7 @@
                 <div class="card border-0 shadow">
                     <div class="card-body p-4">
                         <form id="account-register-form" method="POST" action="/accounts/register">
+                            <?= csrf_field() ?>
                             <div class="mb-3">
                                 <label for="account_number" class="form-label fw-semibold">
                                     Número de cuenta

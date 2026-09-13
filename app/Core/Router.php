@@ -12,19 +12,19 @@ class Router
         $this->container = $container;
     }
 
-    public function get(string $path, array $handler, ?string $middleware = null): void
+    public function get(string $path, array $handler, array $middlewares = []): void
     {
-        $this->routes['GET'][$path] = [$handler, $middleware];
+        $this->routes['GET'][$path] = [$handler, $middlewares];
     }
 
-    public function post(string $path, array $handler, ?string $middleware = null): void
+    public function post(string $path, array $handler, array $middlewares = []): void
     {
-        $this->routes['POST'][$path] = [$handler, $middleware];
+        $this->routes['POST'][$path] = [$handler, $middlewares];
     }
 
-    public function view(string $path, string $handler, ?string $middleware = null): void
+    public function view(string $path, string $handler, array $middlewares = []): void
     {
-        $this->routes['GET'][$path] = [$handler, $middleware];
+        $this->routes['GET'][$path] = [$handler, $middlewares];
     }
 
     public function find(string $httpMethod, string $path): array|string|null
@@ -42,9 +42,9 @@ class Router
             exit;
         }
 
-        [$handler, $middleware] = $route;
+        [$handler, $middlewares] = $route;
 
-        if ($middleware !== null) {
+        foreach ($middlewares as  $middleware) {
             $middlewareInstance = $this->container->make($middleware);
             $middlewareInstance->handle();
         }

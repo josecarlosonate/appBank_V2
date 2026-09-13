@@ -149,6 +149,7 @@
                                             </td>
                                             <td>
                                                 <form method="POST" action="/accounts/status">
+                                                    <?= csrf_field() ?>
                                                     <input type="hidden" name="account_id" value="<?= $account['id'] ?>">
 
                                                     <button
@@ -230,6 +231,7 @@
                                                 <td><?= $registeredAccount['account_type'] == 'SAVINGS' ? 'Cuenta de ahorros' : 'Cuenta corriente' ?></td>
                                                 <td>
                                                     <form method="POST" class="unregister-account-form" action="/accounts/unregister">
+                                                        <?= csrf_field() ?>
                                                         <input type="hidden" name="account_id" value="<?= $registeredAccount['account_id'] ?>">
                                                         <button type="submit" class="btn account-status-button btn-outline-danger">
                                                             Desvincular

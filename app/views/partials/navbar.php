@@ -14,6 +14,7 @@
                 </span>
 
                 <form method="POST" action="/logout" class="m-0">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-outline-success">
                         <i class="fa-solid fa-right-from-bracket me-2"></i>
                         Cerrar sesión
